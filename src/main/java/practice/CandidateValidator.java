@@ -9,23 +9,15 @@ public class CandidateValidator implements Predicate<Candidate> {
     private static final String NATIONALITY = "Ukrainian";
 
     @Override
-    public boolean test(Candidate c) {
-        if (c.getAge() < MIN_AGE) {
-            return false;
-        }
+    public boolean test(Candidate candidate) {
+        return candidate.getAge() >= MIN_AGE
+                && candidate.isAllowedToVote()
+                && candidate.getNationality().equals(NATIONALITY)
+                && checkTimeLivingInCountry(candidate);
+    }
 
-        if (!c.isAllowedToVote()) {
-            return false;
-        }
-
-        if (!NATIONALITY.equals(c.getNationality())) {
-            return false;
-        }
-
-        String[] years = c.getPeriodsInUkr().split("-");
-        if (years.length != 2) {
-            return false;
-        }
+    private boolean checkTimeLivingInCountry(Candidate candidate) {
+        String[] years = candidate.getPeriodsInUkr().split("-");
 
         try {
             int from = Integer.parseInt(years[0].trim());
